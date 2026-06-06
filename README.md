@@ -1,5 +1,7 @@
 # THE RAMNET PROTOCOL: A DECENTRALIZED UNIVERSAL COMPUTE MESH
 
+## Role-Aligned Memory Network & Execution Toolchain
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![arXiv](https://img.shields.io/badge/arXiv-2503.XXXXX-b31b1b.svg)](https://arxiv.org/)
 
@@ -27,7 +29,7 @@ The RAMNET Protocol represents the next **Evolutionary Pivot** in artificial int
 
 RAMNET functions as a self-healing memory space with no single point of failure. By implementing a double-triplicate redundancy model, the mesh ensures server-grade reliability ($P_{attack} < 1.0 \times 10^{-6}$ for $f=0.05$). While redundancy is constant per task, total mesh throughput scales linearly ($O(n)$) with the network size.
 
-- **40/40/40 Shard Split:** Tasks are decomposed into overlapping shards (Nodes 1-3) and an identical mirror (Nodes 4-6). Overlap zones (10%) allow for lightweight verification without full re-execution.
+- **3-Way Dimensional Matrix Decomposition:** Tasks are sharded across Row, Column, and Reduction projections (Nodes 1-3) with an identical mirror (Nodes 4-6). Spatial intersections form natural audit zones for lightweight verification without full re-execution.
 - **Incentive Race (First-to-Verify):** To incentivize performance and modern hardware, the first nodes to successfully verify and return results receive a higher $RAM reward payout.
 - **Slashing & Sovereign Auditing:** Nodes are penalized (slashed) for incorrect results, high latency, work falsification, or privacy breaches ("sniffing").
 
