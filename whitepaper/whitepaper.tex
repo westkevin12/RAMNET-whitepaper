@@ -38,7 +38,7 @@ The RAMNET workflow streamlines complex orchestration into a cohesive pipeline:
 \begin{enumerate}
     \item \textbf{Submission:} A user submits a large model training or inference task.
     \item \textbf{Decomposition:} A Gateway Node decomposes the task into ``blind'' matrix logic hashes.
-    \item \textbf{Sharding:} Apache Spark orchestrates the splitting of logic into 40/40/40 overlapping segments across 6-node groups.
+    \item \textbf{Sharding:} Apache Spark orchestrates the splitting of logic into a 3-way dimensional matrix split (row, column, and reduction slices) across 6-node groups.
     \item \textbf{Execution:} Digital nodes (NVIDIA Rubin) handle pre-training, while analog nodes (Mythic) run efficient inference passes.
     \item \textbf{Verification:} Results are recombined via Verde-style bisection, with Tier-4 nodes resolving rare disputes.
     \item \textbf{Settlement:} Rewards flow via SCU-normalized PoUW on the PulseChain coordination layer.
@@ -61,18 +61,18 @@ To mirror server-grade ECC RAM and hardware-level mirroring (e.g., redundant pow
 \resizebox{\columnwidth}{!}{
 \begin{tikzpicture}[node distance=1.5cm, every node/.style={draw, rectangle, minimum width=2.5cm, minimum height=0.8cm, font=\small}]
     % Primary Set
-    \node (n1) [fill=blue!10] {Node 1 ($S_1$)};
-    \node (n2) [right of=n1, xshift=1.5cm, fill=blue!10] {Node 2 ($S_2$)};
-    \node (n3) [right of=n2, xshift=1.5cm, fill=blue!10] {Node 3 ($S_3$)};
+    \node (n1) [fill=blue!10] {Node 1 ($A_{\text{Row}}$)};
+    \node (n2) [right of=n1, xshift=1.5cm, fill=blue!10] {Node 2 ($B_{\text{Col}}$)};
+    \node (n3) [right of=n2, xshift=1.5cm, fill=blue!10] {Node 3 ($K_{\text{Red}}$)};
     
     % Mirror Set
-    \node (n4) [below of=n1, yshift=-0.5cm, fill=green!10] {Node 4 ($S'_1$)};
-    \node (n5) [below of=n2, yshift=-0.5cm, fill=green!10] {Node 5 ($S'_2$)};
-    \node (n6) [below of=n3, yshift=-0.5cm, fill=green!10] {Node 6 ($S'_3$)};
+    \node (n4) [below of=n1, yshift=-0.5cm, fill=green!10] {Node 4 ($A'_{\text{Row}}$)};
+    \node (n5) [below of=n2, yshift=-0.5cm, fill=green!10] {Node 5 ($B'_{\text{Col}}$)};
+    \node (n6) [below of=n3, yshift=-0.5cm, fill=green!10] {Node 6 ($K'_{\text{Red}}$)};
     
     % Overlap Connectors (Audit Zones)
-    \draw[<->, dashed, thick, blue!60] (n1.east) -- node[above, draw=none, fill=none] {10\% Audit} (n2.west);
-    \draw[<->, dashed, thick, blue!60] (n2.east) -- node[above, draw=none, fill=none] {10\% Audit} (n3.west);
+    \draw[<->, dashed, thick, blue!60] (n1.east) -- node[above, draw=none, fill=none] {Geometric Audit} (n2.west);
+    \draw[<->, dashed, thick, blue!60] (n2.east) -- node[above, draw=none, fill=none] {Geometric Audit} (n3.west);
     
     % Mirror Set Connectors
     \draw[<->, dashed, thick, green!60] (n4.east) -- (n5.west);
@@ -89,13 +89,13 @@ To mirror server-grade ECC RAM and hardware-level mirroring (e.g., redundant pow
     \node[draw=none, below=0.2cm of n5] {Mirror Set (Ephemeral Failover)};
 \end{tikzpicture}
 }
-\caption{6-Node ECC Model: 40/40/40 Shard Decomposition with 10\% Overlap Audit Zones and High-Durability Mirroring.}
+\caption{6-Node ECC Model: 3-Way Dimensional Matrix Decomposition with Natural Intersection Audit Zones and High-Durability Mirroring.}
 \label{fig:ecc_model}
 \end{figure}
 
 \begin{itemize}
-    \item \textbf{40/40/40 Shard Decomposition:} Tasks are partitioned into overlapping segments. This ensures a 10\% overlap between adjacent nodes, allowing for lightweight cross-verification without full task re-execution.
-    \item \textbf{Mirror Set (Nodes 4-6):} A simultaneous, ephemeral duplicate of the 40/40/40 split. This set acts as a fallback for surviving regional outages and global network partitions.
+    \item \textbf{3-Way Dimensional Matrix Decomposition:} Tasks are partitioned across functional dimensions (row, column, and reduction axis slices). This achieves zero-overhead sharding while creating natural geometric audit intersections between adjacent nodes.
+    \item \textbf{Mirror Set (Nodes 4-6):} A simultaneous, ephemeral duplicate of the dimensional split. This set acts as a fallback for surviving regional outages and global network partitions.
 \end{itemize}
 Totaling 6 nodes, if any single node fails or returns malicious data, the mesh uses the Verde Bisection Game to hot-swap the corrupted memory segment without dropping the compute task. This mechanism, adapted from Gensyn's referee-delegation model \cite{gensyn2025verde}, utilizes a two-level binary search on operations to pinpoint divergence at the logic-state level. Achieving ``Uninterruptible Compute,'' the protocol utilizes a competition-based incentive model where the first nodes to verify and return results receive the majority of the \$RAM reward, incentivizing the adoption of modern, high-performance hardware.
 
@@ -107,18 +107,18 @@ To maintain consensus across heterogeneous hardware, we implement \textbf{Range-
 Unifying digital GPUs, analog AI tiles, and quantum logical qubits requires a sophisticated abstraction layer. The RAMNET runtime acts as a universal compiler, decomposing high-level logic hashes ($\mathcal{H}_L$) into hardware-specific kernels. Analog devices receive primitive matrix-vector multiplication (MVM) operations where weights are pre-loaded, while dDigital devices (Rubin clusters) handle dynamic algorithmic branching, while quantum-ready nodes are reserved for specialized proof primitives or act as high-integrity oracles within the mesh. \textbf{Challenges \& Roadmap:} Heterogeneous execution requires a custom abstraction runtime (currently in development). Initial prototypes focus on digital-analog orchestration, with quantum-ready tiers phased in post-2027.
 
 \section{Mathematical Proof: 6-Node Redundant ECC Model}
-\subsection{The 40/40/40 Decomposition}
-Let a compute task $T$ be represented as a set of operations $O$. In a standard RAMNET execution, the task is partitioned into three overlapping segments:
+\subsection{3-Way Dimensional Matrix Decomposition}
+Let a matrix multiplication task $T = A \times B$ with dimensions $M \times N$ and inner dimension $K$ be distributed across the mesh. Rather than dividing the total workload into overlapping linear segments which breaks cache locality, the task is partitioned across three distinct spatial dimensions:
 \begin{equation}
-S_1 = \{O_1, \dots, O_{0.4n}\}
+\text{Shard}_A = A_{\left[0:\frac{M}{3}\right]} \times B \quad (\text{Row Projection})
 \end{equation}
 \begin{equation}
-S_2 = \{O_{0.3n}, \dots, O_{0.7n}\}
+\text{Shard}_B = A \times B_{\left[0:\frac{N}{3}\right]} \quad (\text{Column Projection})
 \end{equation}
 \begin{equation}
-S_3 = \{O_{0.6n}, \dots, O_n\}
+\text{Shard}_C = A_{\left[:, 0:\frac{K}{3}\right]} \times B_{\left[0:\frac{K}{3}, :\right]} \quad (\text{Inner Reduction})
 \end{equation}
-This ensures a 10\% overlap between adjacent nodes. These ``Audit Zones'' allow Node A to verify the end-state of Node B’s entry-point without re-executing the entire shard.
+The intersection where these dimensional calculations cross paths forms a natural, zero-overhead ``Audit Zone.'' Since these intersections are computed independently by distinct nodes, they act as unforgeable proof matrices to verify execution integrity without work duplication.
 
 \subsection{Slashing and Sovereign Auditing}
 Assuming the protocol requires a supermajority of at least 4 honest nodes to accept a shard result, the probability $P_{attack}$ of a corrupted or malicious result being accepted in a single task is:
